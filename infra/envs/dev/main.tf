@@ -31,5 +31,4 @@ module "eks" {
   environment = var.environment
   region = var.region
   private_subnets_id = module.vpc.private_subnets_id
-  public_subnets_id = module.vpc.public_subnets_id
 }

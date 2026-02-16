@@ -6,10 +6,13 @@ variable "region" {
   type = string
 }
 
-variable "public_subnets_id" {
+variable "private_subnets_id" {
   type = list(string)
 }
 
-variable "private_subnets_id" {
-  type = list(string)
+variable "common_tags" {
+  type = map(string)
+  default = {
+    "environment" = "dev"
+  }
 }
