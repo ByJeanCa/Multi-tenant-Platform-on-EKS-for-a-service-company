@@ -24,3 +24,12 @@ module "vpc" {
   db_subnet_cidrs      = ["10.0.30.0/24", "10.0.40.0/24"]
   cluster_name = "eks-test"
 }
+
+module "eks" {
+  source = "../modules/eks"
+
+  environment = var.environment
+  region = var.region
+  private_subnets_id = module.vpc.private_subnets_id
+  public_subnets_id = module.vpc.public_subnets_id
+}

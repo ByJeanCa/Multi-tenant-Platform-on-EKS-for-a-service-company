@@ -9,3 +9,8 @@ variable "common_tags" {
     "environment" = "dev"
   }
 }
+
+variable "environment" {
+  type = string
+  default = "dev"
+}
