@@ -31,4 +31,10 @@ module "eks" {
   environment = var.environment
   region = var.region
   private_subnets_id = module.vpc.private_subnets_id
+  common_tags = var.common_tags
+}
+
+module "ecr_repo" {
+  source = "../modules/ecr"
+  common_tags = var.common_tags
 }
