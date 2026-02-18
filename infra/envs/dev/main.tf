@@ -38,3 +38,12 @@ module "ecr_repo" {
   source = "../modules/ecr"
   common_tags = var.common_tags
 }
+
+module "db" {
+  source = "../modules/rds"
+
+  subnet_group_db_name = module.vpc.db_group_name
+  vpc_id = module.vpc.vpc_id
+  common_tags = var.common_tags
+  eks_sg_id = module.eks.eks_sg_id
+}
