@@ -108,3 +108,4 @@ resource "aws_iam_role_policy_attachment" "myapp_attach_csi" {
   role       = aws_iam_role.myapp_irsa.name
   policy_arn = aws_iam_policy.eks_csi_policy.arn
 }
+
