@@ -11,6 +11,16 @@ variable "common_tags" {
 }
 
 variable "environment" {
+  type    = string
+  default = "dev"
+}
+
+variable "service_account_namespace" {
   type = string
   default = "dev"
+}
+
+variable "service_account_name" {
+  type = string
+  default = "api"
 }

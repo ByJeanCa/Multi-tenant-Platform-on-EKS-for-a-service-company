@@ -48,7 +48,6 @@ locals {
 
 }
 
-
 resource "aws_subnet" "public" {
 
   for_each = local.public_map
@@ -173,3 +172,11 @@ resource "aws_route_table_association" "db" {
   route_table_id = aws_route_table.db_route_table.id
 }
 
+
+resource "aws_db_subnet_group" "db" {
+  name = "${var.cluster_name}-db-subnet-group"
+
+  subnet_ids = values(aws_subnet.db)[*].id
+
+  tags = var.common_tags
+}
