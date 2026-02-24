@@ -16,11 +16,11 @@ variable "environment" {
 }
 
 variable "service_account_namespace" {
-  type = string
+  type    = string
   default = "dev"
 }
 
 variable "service_account_name" {
-  type = string
+  type    = string
   default = "api"
 }
