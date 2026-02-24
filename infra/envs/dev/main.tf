@@ -8,12 +8,27 @@ terraform {
       source  = "hashicorp/tls"
       version = "~>4.0"
     }
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = "~>2.29"
+    }
   }
 }
 
 provider "aws" {
   region  = var.region
   profile = "default"
+}
+
+data "aws_eks_cluster_auth" "main" {
+  name       = module.eks.eks_name
+  depends_on = [module.eks]
+}
+
+provider "kubernetes" {
+  host                   = module.eks.cluster_endpoint
+  cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority)
+  token                  = data.aws_eks_cluster_auth.main.token
 }
 
 module "vpc" {
@@ -107,4 +122,21 @@ resource "aws_iam_policy" "eks_csi_policy" {
 resource "aws_iam_role_policy_attachment" "myapp_attach_csi" {
   role       = aws_iam_role.myapp_irsa.name
   policy_arn = aws_iam_policy.eks_csi_policy.arn
+}
+
+resource "kubernetes_namespace" "dev" {
+  metadata {
+      name = var.service_account_namespace
+  }
+}
+
+resource "kubernetes_service_account" "api" {
+  metadata {
+    name = var.service_account_name
+    namespace = kubernetes_namespace.dev.metadata[0].name
+
+    annotations = {
+      "eks.amazonaws.com/role-arn" = aws_iam_role.myapp_irsa.arn
+    }
+  }
 }
