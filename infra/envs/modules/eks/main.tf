@@ -95,6 +95,10 @@ resource "aws_eks_node_group" "apps-ng" {
   capacity_type = "ON_DEMAND"
   instance_types = ["t3a.medium"]
 
+  labels = {
+    role = "app"
+  }
+
   scaling_config {
     desired_size = 1
     max_size     = 2
@@ -121,6 +125,10 @@ resource "aws_eks_node_group" "system-ng" {
 
   capacity_type = "ON_DEMAND"
   instance_types = ["t3a.medium"]
+
+  labels = {
+    role = "system"
+  }
 
   scaling_config {
     desired_size = 1
