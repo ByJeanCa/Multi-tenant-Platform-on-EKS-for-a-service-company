@@ -56,6 +56,7 @@ module "eks" {
 module "ecr_repo" {
   source      = "../modules/ecr"
   common_tags = var.common_tags
+  image_names = ["worker", "api", "frontend"]
 }
 
 module "db" {
