@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: dev
+  name: myapp-api
+  labels:
+    app.kubernetes.io/name: myapp
+    app.kubernetes.io/component: api
+    app.kubernetes.io/part-of: myapp
+    tier: backend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: myapp
+      app.kubernetes.io/component: api
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: myapp
+        app.kubernetes.io/component: api
+        app.kubernetes.io/part-of: myapp
+        tier: backend
+    spec:
+      serviceAccountName: api
+      #nodeSelector:
+      #  role: apps
+      volumes:
+        - name: db-creds
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: db-aws-secrets
+      containers:
+        - name: api
+          image: 326306382233.dkr.ecr.us-east-1.amazonaws.com/eks-test-repo:latest
+          ports:
+            - containerPort: 8000
+          volumeMounts:
+            - name: db-creds
+              mountPath: /mnt/db-creds/
+          envFrom:
+            - configMapRef:
+                name: myapp-api-config
+            - configMapRef:
+                name: myapp-redis-config   
+---              
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: dev
+  name: api-service
+spec:
+  selector:
+    app.kubernetes.io/name: myapp
+    app.kubernetes.io/component: api
+    app.kubernetes.io/part-of: myapp
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000
