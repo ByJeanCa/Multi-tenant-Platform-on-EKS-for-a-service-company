@@ -23,8 +23,8 @@ spec:
         tier: backend
     spec:
       serviceAccountName: api
-      #nodeSelector:
-      #  role: apps
+      nodeSelector:
+        role: apps
       volumes:
         - name: db-creds
           csi:
@@ -34,7 +34,7 @@ spec:
               secretProviderClass: db-aws-secrets
       containers:
         - name: api
-          image: 326306382233.dkr.ecr.us-east-1.amazonaws.com/eks-test-repo:latest
+          image: 326306382233.dkr.ecr.us-east-1.amazonaws.com/repo-api-image:latest
           ports:
             - containerPort: 8000
           volumeMounts:
