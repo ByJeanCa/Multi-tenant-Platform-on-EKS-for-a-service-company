@@ -15,6 +15,9 @@ provider "aws" {
   region  = var.region
   profile = "default"
 }
+locals {
+  cluster_name = format("eks-cluster-test-%s-%s", var.environment, var.region)
+}
 
 module "vpc" {
   source = "../modules/vpc"
@@ -26,7 +29,7 @@ module "vpc" {
   public_subnet_cidrs  = ["10.0.1.0/24", "10.0.2.0/24"]
   private_subnet_cidrs = ["10.0.10.0/24", "10.0.20.0/24"]
   db_subnet_cidrs      = ["10.0.30.0/24", "10.0.40.0/24"]
-  cluster_name         = "eks-test"
+  cluster_name = local.cluster_name
 }
 
 module "eks" {
@@ -36,6 +39,7 @@ module "eks" {
   region             = var.region
   private_subnets_id = module.vpc.private_subnets_id
   common_tags        = var.common_tags
+  name = local.cluster_name
 }
 
 module "ecr_repo" {

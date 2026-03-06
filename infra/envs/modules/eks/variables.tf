@@ -16,3 +16,7 @@ variable "common_tags" {
     "environment" = "dev"
   }
 }
+
+variable "name" {
+  type = string
+}
