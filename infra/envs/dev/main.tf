@@ -32,6 +32,13 @@ module "vpc" {
   cluster_name = local.cluster_name
 }
 
+module "cert" {
+  source = "../modules/cert"
+
+  domain = var.domain
+  common_tags = var.common_tags
+}
+
 module "eks" {
   source = "../modules/eks"
 

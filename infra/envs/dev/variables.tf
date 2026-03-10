@@ -24,3 +24,8 @@ variable "service_account_name" {
   type    = string
   default = "api"
 }
+
+variable "domain" {
+  type = string
+  default = "veliacr.com"
+}
