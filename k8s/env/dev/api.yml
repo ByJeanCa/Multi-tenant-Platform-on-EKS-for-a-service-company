@@ -24,7 +24,7 @@ spec:
     spec:
       serviceAccountName: api
       nodeSelector:
-        role: apps
+        role: app
       volumes:
         - name: db-creds
           csi:
