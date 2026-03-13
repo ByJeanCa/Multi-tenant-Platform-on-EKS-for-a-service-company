@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: {{ .Values.namespace }}
+  name: "{{ .Values.app_name }}-api"
+  labels:
+    app.kubernetes.io/name: {{ .Values.app_name }}
+    app.kubernetes.io/component: api
+    app.kubernetes.io/part-of: {{ .Values.app_name }}
+    tier: backend
+spec:
+  replicas: {{ .Values.api_replicas_count }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ .Values.app_name }}
+      app.kubernetes.io/component: api
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ .Values.app_name }}
+        app.kubernetes.io/component: api
+        app.kubernetes.io/part-of: {{ .Values.app_name }}
+        tier: backend
+    spec:
+      serviceAccountName: {{ .Values.api_service_account_name }}
+      nodeSelector:
+        role: {{ .Values.app_node }}
+      volumes:
+        - name: db-creds
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: db-aws-secrets
+      containers:
+        - name: api
+          image: "{{ .Values.api_image.name }}:{{ .Values.api_image.tag }}"
+          ports:
+            - containerPort: 8000
+          volumeMounts:
+            - name: db-creds
+              mountPath: /mnt/db-creds/
+          envFrom:
+            - configMapRef:
+                name: "{{ .Values.app_name }}-api-config"
+            - configMapRef:
+                name: "{{ .Values.app_name }}-redis-config"
+---              
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: {{ .Values.namespace }}
+  name: api-service
+spec:
+  selector:
+    app.kubernetes.io/name: {{ .Values.app_name }}
+    app.kubernetes.io/component: api
+    app.kubernetes.io/part-of: {{ .Values.app_name }}
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000

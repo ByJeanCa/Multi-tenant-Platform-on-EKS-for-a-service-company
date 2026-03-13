@@ -1,0 +1,38 @@
+namespace: dev
+api_service_account_name: api
+app_node: app
+
+api_replicas_count: 3
+worker_replicas_count: 3
+frontend_replicas_count: 1
+
+frontend_api_base_url: /api
+certificate_arn: arn:aws:acm:us-east-1:326306382233:certificate/0f285adb-8721-49a7-947d-fa8e2afb416e
+host_domain: veliacr.com
+
+api_image:
+  name: 326306382233.dkr.ecr.us-east-1.amazonaws.com/repo-api-image
+  tag: latest
+frontend_image:
+  name: 326306382233.dkr.ecr.us-east-1.amazonaws.com/repo-frontend-image
+  tag: latest
+redis_image:
+  name: redis
+  tag: 7-alpine
+worker_image:
+  name: 326306382233.dkr.ecr.us-east-1.amazonaws.com/repo-worker-image
+  tag: latest
+
+db:
+  host: "terraform-20260313183645678200000005.canuy8eysipe.us-east-1.rds.amazonaws.com"
+  port: "5432"
+  name: "db_test"
+  user_file: /mnt/db-creds/username
+  password_file: /mnt/db-creds/password
+  secrets:
+    name: rds!db-9b403036-70a0-4ce4-83a2-a8fc13e43223
+
+redis:
+  url: "redis://redis-service:6379/0"
+  celery_concurrency: "2"
+  startup_max_attemps: "12"
