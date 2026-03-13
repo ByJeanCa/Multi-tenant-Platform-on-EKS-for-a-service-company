@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: {{ .Values.namespace }}
+  name: "{{ .Values.app_name}}-frontend"
+  labels:
+    app.kubernetes.io/name: {{ .Values.app_name }}
+    app.kubernetes.io/component: frontend
+    app.kubernetes.io/part-of: {{ .Values.app_name }}
+    tier: frontend
+spec:
+  replicas: {{ .Values.frontend_replicas_count }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: frontend
+      app.kubernetes.io/part-of: {{ .Values.app_name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ .Values.app_name }}
+        app.kubernetes.io/component: frontend
+        app.kubernetes.io/part-of: {{ .Values.app_name }}
+        tier: frontend
+    spec:
+      nodeSelector:
+        role: {{ .Values.app_node }}
+      containers:
+        - name: frontend
+          image: "{{ .Values.frontend_image.name }}:{{ .Values.frontend_image.tag }}"
+          ports:
+            - containerPort: 8080
+          env:
+            - name: API_BASE_URL
+              value: {{ .Values.frontend_api_base_url | quote }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: {{ .Values.namespace }}
+  name: frontend-service
+spec:
+  selector: 
+    app.kubernetes.io/name: {{ .Values.app_name }}
+    app.kubernetes.io/component: frontend
+    app.kubernetes.io/part-of: {{ .Values.app_name }}
+  type: ClusterIP
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+

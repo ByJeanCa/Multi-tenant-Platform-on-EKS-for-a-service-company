@@ -1,10 +1,10 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: myapp
-  namespace: dev
+  name: {{ .Values.app_name }}
+  namespace: {{ .Values.namespace }}
   annotations:
-    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-1:326306382233:certificate/358dc0c4-5529-44a0-8385-4f0a81d3461e
+    alb.ingress.kubernetes.io/certificate-arn: {{ .Values.certificate_arn }}
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS":443}]'
     alb.ingress.kubernetes.io/ssl-redirect: "443"
     alb.ingress.kubernetes.io/scheme: internet-facing
@@ -13,7 +13,7 @@ metadata:
 spec:
   ingressClassName: alb
   rules:
-    - host: veliacr.com
+    - host: {{ .Values.host_domain }}
       http:
         paths:
           - path: /
@@ -23,7 +23,7 @@ spec:
                 name: frontend-service
                 port:
                   number: 8080
-          - path: /api
+          - path: {{ .Values.frontend_api_base_url }}
             pathType: Prefix
             backend:
               service:
