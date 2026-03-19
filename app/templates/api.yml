@@ -37,6 +37,13 @@ spec:
           image: "{{ .Values.api_image.name }}:{{ .Values.api_image.tag }}"
           ports:
             - containerPort: 8000
+          resources:
+            requests:
+              memory: 256Mi
+              cpu: 100m
+            limits:
+              memory: 500Mi
+              cpu: 500m
           volumeMounts:
             - name: db-creds
               mountPath: /mnt/db-creds/
