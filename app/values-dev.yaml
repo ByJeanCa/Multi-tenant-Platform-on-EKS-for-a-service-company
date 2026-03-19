@@ -36,3 +36,7 @@ redis:
   url: "redis://redis-service:6379/0"
   celery_concurrency: "2"
   startup_max_attemps: "12"
+
+hap:
+  min_replicas: 2
+  max_replicas: 10
