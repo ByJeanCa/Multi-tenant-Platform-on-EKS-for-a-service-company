@@ -6,7 +6,7 @@ terraform {
     }
     helm = {
       source  = "hashicorp/helm"
-      version = "~>2.7" 
+      version = "~>2.7"
     }
   }
 }
@@ -28,4 +28,9 @@ provider "helm" {
       args        = ["eks", "get-token", "--cluster-name", var.cluster_name]
     }
   }
+}
+
+provider "aws" {
+  region  = var.region
+  profile = "default"
 }
