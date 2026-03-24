@@ -13,3 +13,7 @@ output "rds_secret_arn" {
 output "cert_arn" {
   value = module.cert.cert_arn
 }
+
+output "db_identifier" {
+  value = module.db.db_identifier
+}
